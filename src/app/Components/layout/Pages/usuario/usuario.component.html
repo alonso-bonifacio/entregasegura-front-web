@@ -1,0 +1,174 @@
+<!--Barra superior-->
+<nav id="page-header" class="navbar navbar-expand-lg navbar-light shadow-sm bg-transparent py-4 px-4 animacion lenta">
+  <div class="d-flex align-items-center">
+    <i class="fas fa-align-left text-primary fs-4 me-3" (click)="ocultarMostrar()" id="menu-toggle"></i>
+    <h2 class="fs-2 m-0">Usuarios</h2>
+  </div>
+
+  <div class="primary-bg px-2 pt-1 rounded ms-auto mb-2 mb-lg-0">
+    <h5 class="text-white"><i class="fas fa-user me-2"></i>{{usuario.nombreTrabajador}} {{usuario.apellidoTrabajador}}</h5>
+  </div>
+</nav>
+
+<!-- Contenido -->
+<div class="container-fluid px-4 animacion lenta">
+  <!-- Busqueda y Botones -->
+  <div class="row g-3 my-3">
+    <div class="col-md-9">
+      <div class="d-flex">
+        <input class="form-control me-2" type="text" placeholder="Ingrese Apellido de Usuario"
+          (keyup)="buscarUsuario(buscarTexto.value)" #buscarTexto />
+        <button title="Buscar" class="btn btn-outline-primary" (click)="buscarUsuario(buscarTexto.value)" type="button">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </div>
+    <div class="col-md-3 text-end">
+      <button type="button" class="btn btn-outline-success" (click)="crear()" data-bs-toggle="modal"
+        data-bs-target="#exampleModal">
+        <i class="fa fa-plus-circle"></i> Agregar
+      </button>
+    </div>
+  </div>
+  <!--Tabla-->
+  <div class="row my-4">
+    <span class="alert alert-info text-center" *ngIf=" buscarTexto.value === '' && listaUsuarios.length === 0">Cargando
+      <i class="fas fa-sync-alt fa-spin"></i></span>
+    <span class="alert alert-info text-center" *ngIf="buscarTexto.value !== '' && listaUsuarios.length === 0">No existen
+      resultados con el término: "{{buscarTexto.value}}"</span>
+    <div *ngIf="listaUsuarios.length > 0" class="col table-responsive animacion lenta">
+      <table class="table bg-white rounded shadow-sm table-hover animacion lenta">
+        <caption>
+          Lista de Usuarios
+        </caption>
+        <thead class="table-light">
+          <tr>
+            <th *ngFor="let titulo of titulosTabla" scope="col">{{titulo}}</th>
+          </tr>
+        </thead>
+        <tbody id="table_proveedores">
+          <tr *ngFor="let usuario of listaUsuarios; index as i">
+            <th scope="row">{{i+1}}</th>
+            <td>{{usuario.apellidoTrabajador}}, {{usuario.nombreTrabajador}}</td>
+            <td>{{usuario.nombreRol}}</td>
+            <td>{{usuario.correoTrabajador}}</td>
+            <td>
+              <div class="d-flex">
+                <button title="editar" (click)="editar(usuario)" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                  class="btn btn-outline-warning mx-2" type="button">
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button title="borrar" (click)="eliminar(usuario)" class="btn btn-outline-danger" type="button">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header primary-bg text-white">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          {{ tituloAccion }}
+        </h1>
+        <button type="button" class="btn btn-lg btn-link link-light" data-bs-dismiss="modal" aria-label="Close">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <form [formGroup]="formularioUsuario">
+
+            <div class="mb-3">
+              <label for="idTrabajador" class="col-form-label">Trabajador:</label>
+              <select class="form-select" formControlName="idTrabajador" name="idTrabajador" id="idTrabajador">
+                <option *ngFor="let trabajador of listaTrabajadores" [value]="trabajador.idTrabajador">
+                  {{ trabajador.apellido }}, {{ trabajador.nombre }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="idRol" class="col-form-label">Rol:</label>
+              <select class="form-select" formControlName="idRol" name="idRol" id="idRol">
+                <option *ngFor="let rol of listaRoles" [value]="rol.idRol">
+                  {{ rol.nombre }}
+                </option>
+              </select>
+            </div>
+            <div class="mb-3">
+              <label for="contrasena" class="col-form-label">Contraseña:</label>
+              <input type="text" class="form-control" formControlName="contrasena" name="contrasena" id="contrasena" />
+            </div>
+            <div class="mb-3 container">
+              <div class="row">
+                <label class="col-form-label ps-0">Permisos:</label>
+              </div>
+              <div class="row">
+                <div class="col-6 form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" name="gestionProveedor"
+                    formControlName="gestionProveedor" id="gestionProveedor">
+                  <label class="form-check-label" for="gestionProveedor">Gestión Proveedor</label>
+                </div>
+                <div class="col-6 form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" name="gestionProducto"
+                    formControlName="gestionProducto" id="gestionProducto">
+                  <label class="form-check-label" for="gestionProducto">Gestión Producto</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6 form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" name="gestionCategoria"
+                    formControlName="gestionCategoria" id="gestionCategoria">
+                  <label class="form-check-label" for="gestionCategoria">Gestión Categoría</label>
+                </div>
+                <div class="col-6 form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" name="gestionCliente"
+                    formControlName="gestionCliente" id="gestionCliente">
+                  <label class="form-check-label" for="gestionCliente">Gestión Cliente</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6 form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" name="gestionTrabajador"
+                    formControlName="gestionTrabajador" id="gestionTrabajador">
+                  <label class="form-check-label" for="gestionTrabajador">Gestión Trabajador</label>
+                </div>
+                <div class="col-6 form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" name="gestionIngreso"
+                    formControlName="gestionIngreso" id="gestionIngreso">
+                  <label class="form-check-label" for="gestionIngreso">Gestión Ingreso</label>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-6 form-check form-switch">
+                  <input class="form-check-input" type="checkbox" role="switch" name="gestionUsuario"
+                    formControlName="gestionUsuario" id="gestionUsuario">
+                  <label class="form-check-label" for="gestionUsuario">Gestión Usuario</label>
+                </div>
+              </div>
+
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" [disabled]="formularioUsuario.invalid"
+          (click)="guardar()">
+          {{ botonAccion }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Fin Modal-->

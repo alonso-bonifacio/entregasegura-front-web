@@ -1,1 +1,146 @@
 /* You can add global styles to this file, and also import other style files */
+* {
+  font-family: 'Poppins', sans-serif;
+}
+
+:root {
+  --main-bg-color: #14274E;
+  --main-text-color: #F1F6F9;
+  --second-text-color: #9BA4B4;
+  --second-bg-color: #14274E;
+}
+
+#fondoLogin{
+  background: url(assets/fondo-login.svg);
+}
+
+.primary-text {
+  color: var(--main-text-color);
+}
+
+.second-text {
+  color: var(--second-text-color);
+}
+
+.primary-bg {
+  background-color: var(--main-bg-color);
+}
+
+.secondary-bg {
+  background-color: var(--second-bg-color);
+}
+
+.rounded-full {
+  border-radius: 100%;
+}
+
+#wrapper {
+  overflow-x: hidden;
+  background-color: #f4f5f7;
+}
+
+#sidebar-wrapper {
+  margin-left: -15rem;
+  -webkit-transition: margin 0.25s ease-out;
+  -moz-transition: margin 0.25s ease-out;
+  -o-transition: margin 0.25s ease-out;
+  transition: margin 0.25s ease-out;
+}
+
+#sidebar-wrapper .sidebar-heading {
+  padding: 0.875rem 1.25rem;
+  font-size: 1.2rem;
+  cursor: pointer;
+}
+
+#sidebar-wrapper .list-group {
+  width: 15rem;
+}
+
+#page-content-wrapper {
+  min-width: 100vw;
+  overflow-y: auto;
+  height: 100vh;
+}
+
+#wrapper.toggled #sidebar-wrapper {
+  margin-left: 0;
+}
+
+#menu-toggle {
+  cursor: pointer;
+}
+
+#page-header {
+  position: sticky;
+  top: 0;
+  background-color: #f4f5f7 !important;
+  z-index: 1;
+}
+
+.list-group-item {
+  border: none;
+  padding: 20px 30px;
+}
+
+.list-group-item.active {
+  width: auto;
+  background-color: #f4f5f7 !important;
+  color: #0038a8d8;
+  margin-left: 1rem;
+  padding: 0.7rem;
+  font-weight: bold;
+  border-radius: 5rem 0 0 5rem;
+}
+
+.list-group-item:hover:not(.active) {
+  color: #F1F6F9;
+}
+
+.list-group-item:nth-last-child(1):hover {
+  color: #f43535;
+}
+
+/* ANIMACIONES */
+.animacion {
+  -webkit-animation-duration: 1s;
+  animation-duration: 1s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+.rapida{
+  -webkit-animation-duration: 0.4s;
+  animation-duration: 0.4s;
+  -webkit-animation-fill-mode: both;
+  animation-fill-mode: both;
+}
+
+@keyframes lenta {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.lenta {
+  animation-name: lenta;
+}
+
+@media (min-width: 768px) {
+  #sidebar-wrapper {
+    margin-left: 0;
+  }
+
+  #page-content-wrapper {
+    min-width: 0;
+    width: 100%;
+  }
+
+  #wrapper.toggled #sidebar-wrapper {
+    margin-left: -15rem;
+  }
+}

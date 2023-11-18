@@ -1,0 +1,16 @@
+<!--Barra superior-->
+<nav id="page-header" class="navbar navbar-expand-lg navbar-light shadow-sm bg-transparent py-4 px-4 animacion lenta">
+  <div class="d-flex align-items-center">
+    <i class="fas fa-align-left text-primary fs-4 me-3" (click)="ocultarMostrar()" id="menu-toggle"></i>
+    <h2 class="fs-2 m-0">Bienvenido</h2>
+  </div>
+
+  <div class="primary-bg px-2 pt-1 rounded ms-auto mb-2 mb-lg-0">
+    <h5 class="text-white"><i class="fas fa-user me-2"></i>{{usuario.nombreTrabajador}} {{usuario.apellidoTrabajador}}</h5>
+  </div>
+</nav>
+
+<!-- Contenido -->
+<div class="container-fluid px-4 ratio ratio-16x9 animacion lenta">
+  <iframe class="px-3 py-4" [src]="url | domseguro" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" allowfullscreen></iframe>
+</div>

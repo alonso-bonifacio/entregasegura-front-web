@@ -1,0 +1,144 @@
+<!--Barra superior-->
+<nav id="page-header" class="navbar navbar-expand-lg navbar-light shadow-sm bg-transparent py-4 px-4 animacion lenta">
+  <div class="d-flex align-items-center">
+    <i class="fas fa-align-left text-primary fs-4 me-3" (click)="ocultarMostrar()" id="menu-toggle"></i>
+    <h2 class="fs-2 m-0">Proveedores</h2>
+  </div>
+
+  <div class="primary-bg px-2 pt-1 rounded ms-auto mb-2 mb-lg-0">
+    <h5 class="text-white"><i class="fas fa-user me-2"></i>{{usuario.nombreTrabajador}} {{usuario.apellidoTrabajador}}</h5>
+  </div>
+</nav>
+<!-- Contenido -->
+<div class="container-fluid px-4 animacion lenta">
+  <!-- Busqueda y Botones -->
+  <div class="row g-3 my-3">
+    <div class="col-md-9">
+      <div class="d-flex">
+        <input class="form-control me-2" id="txtBusqueda" type="text" placeholder="Ingrese Razón Social"
+          (keyup)="buscarProveedor(buscarTexto.value)" #buscarTexto />
+        <button title="Buscar" class="btn btn-outline-primary" (click)="buscarProveedor(buscarTexto.value)"
+          type="button">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </div>
+    <div class="col-md-3 text-end">
+      <button type="button" class="btn btn-outline-success" (click)="crear()" data-bs-toggle="modal"
+        data-bs-target="#exampleModal">
+        <i class="fa fa-plus-circle"></i> Agregar
+      </button>
+    </div>
+  </div>
+
+  <!--Tabla-->
+
+  <div class="row my-4">
+    <span class="alert alert-info text-center"
+      *ngIf="buscarTexto.value === '' && listaProveedores.length === 0">Cargando <i
+        class="fas fa-sync-alt fa-spin"></i></span>
+
+    <span class="alert alert-info text-center" *ngIf="buscarTexto.value !== '' && listaProveedores.length === 0">No
+      existen resultados con el término: "{{buscarTexto.value}}"</span>
+    <div *ngIf="listaProveedores.length > 0" class="col table-responsive animacion lenta">
+      <table class="table bg-white rounded shadow-sm table-hover">
+        <caption>
+          Lista de Proveedores
+        </caption>
+        <thead class="table-light">
+          <tr>
+            <th scope="col" *ngFor="let titulo of titulosTabla">{{titulo}}</th>
+          </tr>
+        </thead>
+        <tbody id="table_proveedores">
+          <tr *ngFor="let proveedor of listaProveedores; index as i;">
+            <th scope="row">{{i + 1}}</th>
+            <td>{{proveedor.razonSocial}}</td>
+            <td>{{proveedor.tipoDocumento}}</td>
+            <td>{{proveedor.numeroDocumento}}</td>
+            <td>{{proveedor.direccion}}</td>
+            <td>{{proveedor.telefono}}</td>
+            <td>{{proveedor.email}}</td>
+            <td>
+              <div class="d-flex">
+                <button title="editar" (click)="editar(proveedor)" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                  class="btn btn-outline-warning mx-2" type="button">
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button title="borrar" (click)="eliminar(proveedor)" class="btn btn-outline-danger" type="button">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header primary-bg text-white">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          {{ tituloAccion }}
+        </h1>
+        <button type="button" class="btn btn-lg btn-link link-light" data-bs-dismiss="modal" aria-label="Close">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <form [formGroup]="formularioProveedor">
+            <div class="mb-3">
+              <label for="razonSocial" class="col-form-label">Razón Social:</label>
+              <input type="text" class="form-control" formControlName="razonSocial" name="razonSocial"
+                id="razonSocial" />
+            </div>
+            <div class="row mb-3">
+              <div class="col-5">
+                <label for="tipoDocumento" class="col-form-label">Tipo de Documento:</label>
+                <select class="form-select" formControlName="idTipoDocumento" name="tipoDocumento" id="tipoDocumento">
+                  <option *ngFor="let tipoDocumento of listaTiposDocumento" [value]="tipoDocumento.idTipoDocumento">
+                    {{ tipoDocumento.tipo }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-7">
+                <label for="numeroDocumento" class="col-form-label">Número de Documento:</label>
+                <input autocomplete="off" type="text" formControlName="numeroDocumento" class="form-control"
+                  name="numeroDocumento" id="numeroDocumento" />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="telefono" class="col-form-label">Teléfono:</label>
+                <input type="text" formControlName="telefono" class="form-control" name="telefono" id="telefono" />
+              </div>
+              <div class="col-md-8">
+                <label for="email" class="col-form-label">Email:</label>
+                <input type="text" formControlName="email" class="form-control" name="email" id="email" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="direccion" class="col-form-label">Dirección:</label>
+              <input type="text" class="form-control" formControlName="direccion" name="direccion" id="direccion" />
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="guardar()" data-bs-dismiss="modal"
+          [disabled]="formularioProveedor.invalid">
+          {{ botonAccion }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Fin Modal-->

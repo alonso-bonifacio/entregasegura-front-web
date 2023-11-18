@@ -1,0 +1,45 @@
+<div class="d-flex" id="wrapper">
+
+  <!-- MENU LATERAL -->
+  <div class="primary-bg animacion lenta" id="sidebar-wrapper">
+    <div href="/menu" class=" sidebar-heading text-center py-4 primary-text fs-4 fw-bold text-uppercase shadow-lg">
+       Emsoir
+    </div>
+    <div class="list-group list-group-flush my-3">
+      <a href="/menu" class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
+        <i class="fas fa-tachometer-alt me-2"></i>Inicio
+      </a>
+      <a *ngIf="usuario.gestionProveedor === 1" [routerLink]="['proveedores']" routerLinkActive="active" class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
+        <i class="fas fa-truck me-2" ></i>Proveedores
+      </a>
+      <a *ngIf="usuario.gestionProducto === 1" [routerLink]="['productos']" routerLinkActive="active" class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
+        <i class="fas fa-gift me-2"></i>Productos
+      </a>
+      <a *ngIf="usuario.gestionCategoria === 1" [routerLink]="['categorias']" routerLinkActive="active" class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
+        <i class="fas fa-paperclip me-2"></i>Categorias
+      </a>
+      <a *ngIf="usuario.gestionCliente === 1" [routerLink]="['clientes']" routerLinkActive="active" class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
+        <i class="fas fa-user-tie me-2"></i>Clientes
+      </a>
+      <a *ngIf="usuario.gestionTrabajador === 1" [routerLink]="['trabajadores']" routerLinkActive="active" class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
+        <i class="fas fa-toolbox me-2"></i>Trabajadores
+      </a>
+      <a *ngIf="usuario.gestionIngreso === 1" [routerLink]="['ingresos']" routerLinkActive="active" class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
+        <i class="fas fa-dolly me-2"></i>Ingresos
+      </a>
+      <a *ngIf="usuario.gestionUsuario === 1" [routerLink]="['usuarios']" routerLinkActive="active" class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
+        <i class="fas fa-user me-2"></i>Usuarios
+      </a>
+      <a href="/login" class="list-group-item list-group-item-action bg-transparent second-text fw-bold">
+        <i class="fas fa-power-off me-2"></i>Salir
+      </a>
+    </div>
+  </div>
+  <!-- FIN MENU LATERAL -->
+
+  <!-- CONTENIDO -->
+  <div id="page-content-wrapper" class="animacion rapida">
+    <router-outlet></router-outlet>
+  </div>
+  <!-- FIN CONTENIDO -->
+</div>

@@ -1,0 +1,108 @@
+<!--Barra superior-->
+<nav id="page-header" class="navbar navbar-expand-lg navbar-light shadow-sm bg-transparent py-4 px-4 animacion lenta">
+  <div class="d-flex align-items-center">
+    <i class="fas fa-align-left text-primary fs-4 me-3" (click)="ocultarMostrar()" id="menu-toggle"></i>
+    <h2 class="fs-2 m-0">Categorias</h2>
+  </div>
+
+  <div class="primary-bg px-2 pt-1 rounded ms-auto mb-2 mb-lg-0">
+    <h5 class="text-white"><i class="fas fa-user me-2"></i>{{usuario.nombreTrabajador}} {{usuario.apellidoTrabajador}}</h5>
+  </div>
+</nav>
+
+<!-- Contenido -->
+<div class="container-fluid px-4 animacion lenta">
+  <!-- Busqueda y Botones -->
+  <div class="row g-3 my-3">
+    <div class="col-md-9">
+      <div class="d-flex" >
+        <input class="form-control me-2" type="text" placeholder="Ingrese Categoria" (keyup)="buscarCategoria(buscarTexto.value)" #buscarTexto />
+        <button title="Buscar" class="btn btn-outline-primary" (click)="buscarCategoria(buscarTexto.value)" type="button">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </div>
+    <div class="col-md-3 text-end">
+      <button type="button" class="btn btn-outline-success" (click)="crear()" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <i class="fa fa-plus-circle"></i> Agregar
+      </button>
+    </div>
+  </div>
+  <!--Tabla-->
+  <div class="row my-4">
+    <span class="alert alert-info text-center" *ngIf=" buscarTexto.value === '' && listaCategorias.length === 0">Cargando <i class="fas fa-sync-alt fa-spin"></i></span>
+    <span class="alert alert-info text-center" *ngIf="buscarTexto.value !== '' && listaCategorias.length === 0">No existen resultados con el término: "{{buscarTexto.value}}"</span>
+    <div *ngIf="listaCategorias.length > 0" class="col table-responsive animacion lenta">
+      <table class="table bg-white rounded shadow-sm table-hover animacion lenta">
+        <caption>
+          Lista de Categorias
+        </caption>
+        <thead class="table-light">
+          <tr>
+            <th *ngFor="let titulo of titulosTabla" scope="col">{{titulo}}</th>
+          </tr>
+        </thead>
+        <tbody id="table_proveedores" >
+          <tr  *ngFor="let categoria of listaCategorias; index as i">
+            <th scope="row">{{i+1}}</th>
+            <td>{{categoria.nombre}}</td>
+            <td>{{categoria.descripcion}}</td>
+            <td>
+              <div class="d-flex">
+                <button title="editar" (click)="editar(categoria)" data-bs-toggle="modal" data-bs-target="#exampleModal" class="btn btn-outline-warning mx-2" type="button">
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button title="borrar" (click)="eliminar(categoria)" class="btn btn-outline-danger" type="button">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+            </td>
+            </tr>
+          </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header primary-bg text-white">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          {{ tituloAccion }}
+        </h1>
+        <button type="button" class="btn btn-lg btn-link link-light" data-bs-dismiss="modal" aria-label="Close">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <form [formGroup]="formularioCategoria">
+            <div class="mb-3">
+              <label for="nombre" class="col-form-label">Nombre:</label>
+              <input type="text" class="form-control" formControlName="nombre" name="nombre"
+                id="nombre" />
+            </div>
+            <div class="mb-3">
+
+                <label for="descripcion" class="col-form-label">Descripción:</label>
+                <textarea class="form-control" formControlName="descripcion" name="descripcion" id="descripcion"></textarea>
+
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" [disabled]="formularioCategoria.invalid" (click)="guardar()">
+          {{ botonAccion }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Fin Modal-->

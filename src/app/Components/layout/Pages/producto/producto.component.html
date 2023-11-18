@@ -1,0 +1,167 @@
+<!--Barra superior-->
+<nav id="page-header" class="navbar navbar-expand-lg navbar-light shadow-sm bg-transparent py-4 px-4 animacion lenta">
+  <div class="d-flex align-items-center">
+    <i class="fas fa-align-left text-primary fs-4 me-3" (click)="ocultarMostrar()" id="menu-toggle"></i>
+    <h2 class="fs-2 m-0">Productos</h2>
+  </div>
+
+  <div class="primary-bg px-2 pt-1 rounded ms-auto mb-2 mb-lg-0">
+    <h5 class="text-white"><i class="fas fa-user me-2"></i>{{usuario.nombreTrabajador}} {{usuario.apellidoTrabajador}}</h5>
+  </div>
+</nav>
+
+<!-- Contenido -->
+<div class="container-fluid px-4 animacion lenta">
+  <!-- Busqueda y Botones -->
+  <div class="row g-3 my-3">
+    <div class="col-md-9">
+      <div class="d-flex">
+        <input class="form-control me-2" type="text" placeholder="Ingrese Nombre del Producto" (keyup)="buscarProducto(buscarTexto.value)" #buscarTexto/>
+        <button title="Buscar" class="btn btn-outline-primary" type="button" (click)="buscarProducto(buscarTexto.value)">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </div>
+    <div class="col-md-3 text-end">
+      <button type="button" class="btn btn-outline-success" (click)="crear()" data-bs-toggle="modal" data-bs-target="#exampleModal">
+        <i class="fa fa-plus-circle"></i> Agregar
+      </button>
+    </div>
+  </div>
+
+  <!--Tabla-->
+  <div class="row my-4">
+    <span class="alert alert-info text-center"
+      *ngIf="buscarTexto.value === '' && listaProductos.length === 0">Cargando <i
+        class="fas fa-sync-alt fa-spin"></i></span>
+
+    <span class="alert alert-info text-center" *ngIf="buscarTexto.value !== '' && listaProductos.length === 0">No
+      existen resultados con el término: "{{buscarTexto.value}}"</span>
+    <div *ngIf="listaProductos.length > 0" class="col table-responsive animacion lenta">
+      <table class="table bg-white rounded shadow-sm table-hover">
+        <caption>
+          Lista de Productos
+        </caption>
+        <thead class="table-light">
+          <tr>
+            <th *ngFor="let titulo of titulosTabla" scope="col">{{titulo}}</th>
+          </tr>
+        </thead>
+        <tbody id="table_producto">
+          <tr *ngFor="let producto of listaProductos; index as i;">
+            <th scope="row">{{i+1}}</th>
+            <td>{{producto.codigo}}</td>
+            <td>{{producto.nombre}}</td>
+            <td>{{producto.descripcion}}</td>
+            <td>{{producto.categoria}}</td>
+            <td>{{producto.presentacion}}</td>
+            <td>{{producto.unidadMedida}}</td>
+            <td>{{producto.cantidadContenido}}</td>
+            <td>{{producto.precioUnitario | currency:'S/'}}</td>
+            <td>{{producto.stock}}</td>
+            <td>
+              <div class="d-flex">
+                <button title="editar" (click)="editar(producto)" data-bs-toggle="modal" data-bs-target="#exampleModal"
+                  class="btn btn-outline-warning mx-2" type="button">
+                  <i class="fa fa-edit"></i>
+                </button>
+                <button title="borrar" (click)="eliminar(producto)" class="btn btn-outline-danger" type="button">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+            </td>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header primary-bg text-white">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          {{ tituloAccion }}
+        </h1>
+        <button type="button" class="btn btn-lg btn-link link-light" data-bs-dismiss="modal" aria-label="Close">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <form [formGroup]="formularioProducto">
+            <div class="row mb-3">
+              <div class="col-3">
+                <label for="codigo" class="col-form-label">Codigo:</label>
+                <input type="text" class="form-control" formControlName="codigo" name="codigo" id="codigo" />
+              </div>
+              <div class="col-9">
+                <label for="nombre" class="col-form-label">Nombre:</label>
+                <input type="text" class="form-control" formControlName="nombre" name="nombre" id="nombre" />
+              </div>
+            </div>
+            <div class="mb-3">
+              <label for="descripcion" class="col-form-label">Descripción:</label>
+              <textarea class="form-control" formControlName="descripcion" name="descripcion"
+                id="descripcion"></textarea>
+            </div>
+            <div class="row mb-3">
+              <div class="col-5">
+                <label for="idCategoria" class="col-form-label">Categoria:</label>
+                <select class="form-select" formControlName="idCategoria" name="idCategoria" id="idCategoria">
+                  <option *ngFor="let categoria of listaCategorias" [value]="categoria.idCategoria">
+                    {{ categoria.nombre }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-7">
+                <label for="idPresentacion" class="col-form-label">Presentación:</label>
+                <select class="form-select" formControlName="idPresentacion" name="idPresentacion" id="idPresentacion">
+                  <option *ngFor="let presentacion of listaPresentaciones" [value]="presentacion.idPresentacion">
+                    {{ presentacion.nombre }}
+                  </option>
+                </select>
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="idMedida" class="col-form-label">U. Medida:</label>
+                <select class="form-select" formControlName="idMedida" name="idMedida" id="idMedida">
+                  <option *ngFor="let medida of listaUndMedidas" [value]="medida.idMedida">
+                    {{ medida.unidadSalida }}
+                  </option>
+                </select>
+              </div>
+              <div class="col-md-8">
+                <label for="cantidadContenido" class="col-form-label">Cantidad:</label>
+                <input type="number" min="0" formControlName="cantidadContenido" class="form-control"
+                  name="cantidadContenido" id="cantidadContenido" />
+              </div>
+            </div>
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="precioUnitario" class="col-form-label">Precio Unitario:</label>
+                <input type="number" min="0.00" step="0.01" class="form-control" formControlName="precioUnitario" name="precioUnitario" id="precioUnitario" />
+              </div>
+              <div class="col-md-6">
+                <label for="stock" class="col-form-label">Stock:</label>
+                <input type="number" min="0" class="form-control" formControlName="stock" name="stock" id="stock" />
+              </div>
+
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal" [disabled]="formularioProducto.invalid" (click)="guardar()">
+          {{ botonAccion }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Fin Modal-->

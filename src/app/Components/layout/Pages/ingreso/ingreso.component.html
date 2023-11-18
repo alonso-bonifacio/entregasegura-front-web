@@ -1,0 +1,353 @@
+<!--Barra superior-->
+<nav id="page-header" class="navbar navbar-expand-lg navbar-light shadow-sm bg-transparent py-4 px-4 animacion lenta">
+  <div class="d-flex align-items-center">
+    <i class="fas fa-align-left text-primary fs-4 me-3" (click)="ocultarMostrar()" id="menu-toggle"></i>
+    <h2 class="fs-2 m-0">Ingresos</h2>
+  </div>
+
+  <div class="primary-bg px-2 pt-1 rounded ms-auto mb-2 mb-lg-0">
+    <h5 class="text-white"><i class="fas fa-user me-2"></i>{{usuario.nombreTrabajador}} {{usuario.apellidoTrabajador}}</h5>
+  </div>
+</nav>
+
+<!-- Contenido -->
+<div class="container-fluid px-4 animacion lenta">
+  <!-- Busqueda y Botones -->
+  <div class="row g-3 my-3">
+    <div class="col-md-9">
+      <div class="d-flex">
+        <input class="form-control me-2" id="txtBusqueda" type="text" placeholder="Ingrese Correlativo del Ingreso"
+          (keyup)="buscarIngreso(buscarTexto.value)" #buscarTexto />
+        <button title="Buscar" class="btn btn-outline-primary" (click)="buscarIngreso(buscarTexto.value)" type="button">
+          <i class="fa fa-search"></i>
+        </button>
+      </div>
+    </div>
+    <div class="col-md-3 text-end">
+      <button type="button" class="btn btn-outline-success" (click)="crear()" data-bs-toggle="modal"
+        data-bs-target="#exampleModal">
+        <i class="fa fa-plus-circle"></i> Agregar
+      </button>
+    </div>
+  </div>
+
+  <!--Tabla-->
+  <div class="row my-4">
+    <span class="alert alert-info text-center" *ngIf="buscarTexto.value === '' && listaIngresos.length === 0">Cargando
+      <i class="fas fa-sync-alt fa-spin"></i></span>
+
+    <span class="alert alert-info text-center" *ngIf="buscarTexto.value !== '' && listaIngresos.length === 0">No existen
+      resultados con el término: "{{ buscarTexto.value }}"</span>
+    <div *ngIf="listaIngresos.length > 0" class="col table-responsive animacion lenta">
+      <table class="table bg-white rounded shadow-sm table-hover">
+        <caption>
+          Lista de Ingresos
+        </caption>
+        <thead class="table-light">
+          <tr>
+            <th scope="col" *ngFor="let titulo of titulosTabla">
+              {{ titulo }}
+            </th>
+          </tr>
+        </thead>
+        <tbody id="table_trabajadores">
+          <tr *ngFor="let ingreso of listaIngresos; index as i">
+            <th scope="row">{{ i + 1 }}</th>
+            <td>{{ ingreso.razonSocial }}</td>
+            <td>{{ ingreso.fecha }}</td>
+            <td>{{ ingreso.nombreComprobante }}</td>
+            <td>{{ ingreso.serie }}</td>
+            <td>{{ ingreso.correlativo }}</td>
+            <td>{{ ingreso.precioTotal | currency : "S/" }}</td>
+            <td>{{ ingreso.nombreTrabajador }}</td>
+            <td>{{ ingreso.estado }}</td>
+            <td>
+              <div class="d-flex">
+                <button title="editar" (click)="visualizar(ingreso)" data-bs-toggle="modal"
+                  data-bs-target="#exampleModalView" class="btn btn-outline-primary mx-2" type="button">
+                  <i class="fa fa-eye"></i>
+                </button>
+                <button title="borrar" (click)="eliminar(ingreso)" class="btn btn-outline-danger" type="button">
+                  <i class="fa fa-trash"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+<!--Modal-->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-fullscreen modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header primary-bg text-white">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          {{ tituloAccion }}
+        </h1>
+        <button type="button" class="btn btn-lg btn-link link-light" data-bs-dismiss="modal" aria-label="Close">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <form [formGroup]="formularioIngreso">
+            <div class="row">
+              <!--Datos del Ingreso-->
+              <div class="col-md-3">
+                <div class="mb-3">
+                  <label for="idProveedor" class="col-form-label">Proveedor:</label>
+                  <select class="form-select" formControlName="idProveedor" name="idProveedor" id="idProveedor">
+                    <option *ngFor="let proveedor of listaProveedores" [value]="proveedor.idProveedor">
+                      {{ proveedor.razonSocial }}
+                    </option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="idTrabajador" class="col-form-label">Trabajador:</label>
+                  <select class="form-select" formControlName="idTrabajador" name="idTrabajador" id="idTrabajador">
+                    <option *ngFor="let trabajador of listaTrabajadores" [value]="trabajador.idTrabajador">
+                      {{ trabajador.apellido }} {{ trabajador.nombre }}
+                    </option>
+                  </select>
+                </div>
+                <div class="mb-3">
+                  <label for="fecha" class="col-form-label">Fecha:</label>
+                  <input type="date" formControlName="fecha" class="form-control" name="fecha" id="fecha" />
+                </div>
+                <div class="mb-3">
+                  <label for="idTipoComprobante" class="col-form-label">Comprobante:</label>
+                  <select class="form-select" formControlName="idTipoComprobante" name="idTipoComprobante"
+                    id="idTipoComprobante">
+                    <option *ngFor="let tpoComprobante of listaTpoComprobante"
+                      [value]="tpoComprobante.idTipoComprobante">
+                      {{ tpoComprobante.nombre }}
+                    </option>
+                  </select>
+                </div>
+                <div class="row mb-3">
+                  <div class="col-md-6">
+                    <label for="serie" class="col-form-label">Serie:</label>
+                    <input type="text" formControlName="serie" class="form-control" name="serie" id="serie" />
+                  </div>
+                  <div class="col-md-6">
+                    <label for="correlativo" class="col-form-label">Correlativo:</label>
+                    <input type="text" formControlName="correlativo" class="form-control" name="correlativo"
+                      id="correlativo" />
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label for="estado" class="col-form-label">Estado:</label>
+                  <select class="form-select" formControlName="estado" name="estado" id="estado">
+                    <option value="En curso">En curso</option>
+                    <option value="Eliminado">Eliminado</option>
+                  </select>
+                </div>
+              </div>
+              <!--Fin de Datos del Ingreso-->
+              <!-- Tabla de Productos -->
+              <div class="col-md-9">
+                <div class="row">
+                  <div class="col-md-4">
+                    <label for="importeTotal" class="col-form-label">Importe Total:</label>
+                    <input type="text" formControlName="importeTotal" class="form-control" name="importeTotal"
+                      id="importeTotal" readonly />
+                  </div>
+                  <div class="col-md-4">
+                    <label for="igv" class="col-form-label">IGV:</label>
+                    <input type="text" formControlName="igv" class="form-control" name="igv" id="igv" readonly />
+                  </div>
+                  <div class="col-md-4">
+                    <label for="precioTotal" class="col-form-label">Precio Total:</label>
+                    <input type="text" formControlName="precioTotal" class="form-control" name="precioTotal"
+                      id="precioTotal" readonly />
+                  </div>
+                </div>
+                <div class="mb-3">
+                  <label class="col-form-label">Detalle:</label>
+                  <div class="col table-responsive animacion lenta">
+                    <table formArrayName="detalleIngresos" class="table bg-white rounded shadow-sm table-hover">
+                      <caption>
+                        Lista de Detalle
+                      </caption>
+                      <thead class="table-light">
+                        <tr>
+                          <th scope="col">N°</th>
+                          <th scope="col">Producto</th>
+                          <th scope="col">Cantidad</th>
+                          <th scope="col">Importe</th>
+                          <th scope="col">F. Compra</th>
+                          <th scope="col">F. Vencimiento</th>
+                          <th scope="col"></th>
+                        </tr>
+                      </thead>
+                      <tbody id="table_trabajadores">
+                        <tr *ngFor="let item of detalleIngresos.controls; let i=index" [formGroupName]="i">
+                          <th>{{i+1}}</th>
+                          <td>
+                            <select class="form-select" (change)="onChange($event, i)" formControlName="idProducto"
+                              name="idProducto" id="{{'idProducto'+i}}">
+                              <option *ngFor="let producto of listaProductos" [value]="producto.idProducto">
+                                {{ producto.nombre }} (PU: {{producto.precioUnitario|currency:'S/'}})
+                              </option>
+                            </select>
+                          </td>
+                          <input type="hidden" name="precioU" id="{{'precioU'+i}}">
+                          <td>
+                            <input type="number" min="0" step="1" (change)="calcular(texto.value, i)" #texto
+                              class="form-control" formControlName="cantidad" name="cantidad" id="{{'cantidad'+i}}" />
+                          </td>
+                          <td>
+                            <input type="number" min="0.00" step="0.01" class="form-control " formControlName="importe"
+                              name="importe" id="{{'importe'+i}}" readonly />
+                          </td>
+                          <td>
+                            <input type="date" formControlName="fechaCompra" class="form-control" name="fechaCompra"
+                              id="fechaCompra" />
+                          </td>
+                          <td>
+                            <input type="date" formControlName="fechaVencimiento" class="form-control"
+                              name="fechaVencimiento" id="fechaVencimiento" />
+                          </td>
+                          <input type="hidden" formControlName="estado" name="estado" id="estado">
+                          <td>
+                            <button title="borrar" (click)="eliminarDetalle(i)" class="btn btn-danger" type="button">
+                              <i class="fa fa-trash"></i>
+                            </button>
+                          </td>
+                        </tr>
+                      </tbody>
+                      <tfoot>
+                        <tr>
+                          <td colspan="7"><button class="btn btn-success" (click)="agregarDetalle()">Agregar</button>
+                          </td>
+                        </tr>
+                      </tfoot>
+                    </table>
+                  </div>
+                </div>
+              </div>
+              <!--Fin Tabla de Productos -->
+            </div>
+          </form>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+          Cancelar
+        </button>
+        <button type="button" class="btn btn-primary" (click)="guardar()" data-bs-dismiss="modal"
+          [disabled]="formularioIngreso.invalid || formularioDetalle.invalid">
+          {{ botonAccion }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Fin Modal-->
+
+<!-- Modal View -->
+<div class="modal fade" id="exampleModalView" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-scrollable">
+    <div class="modal-content">
+      <div class="modal-header primary-bg text-white">
+        <h1 class="modal-title fs-5" id="exampleModalLabel">
+          Datos del Ingreso
+        </h1>
+        <button type="button" class="btn btn-lg btn-link link-light" data-bs-dismiss="modal" aria-label="Close">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="container-fluid">
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label>Creado por: </label>
+              <input class="form-control" type="text"
+                [value]="ingresoActual.nombreTrabajador +' '+ingresoActual.apellidoTrabajador" readonly>
+            </div>
+            <div class="col-md-4">
+              <label>Proveedor: </label>
+              <input class="form-control" type="text" [value]="ingresoActual.razonSocial" readonly>
+            </div>
+            <div class="col-md-4">
+              <label>Fecha: </label>
+              <input class="form-control" type="text" [value]="ingresoActual.fecha" readonly>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-3">
+              <label>Tipo Comprobante: </label>
+              <input class="form-control" type="text" [value]="ingresoActual.nombreComprobante" readonly>
+            </div>
+            <div class="col-md-3">
+              <label>Serie: </label>
+              <input class="form-control" type="text" [value]="ingresoActual.serie" readonly>
+            </div>
+            <div class="col-md-4">
+              <label>Correlativo: </label>
+              <input class="form-control" type="text" [value]="ingresoActual.correlativo" readonly>
+            </div>
+            <div class="col-md-2">
+              <label>Estado:</label>
+              <input class="form-control" type="text" [value]="ingresoActual.estado" readonly>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <label class="col-form-label">Detalle:</label>
+            <div class="col table-responsive animacion lenta">
+              <table class="table bg-white rounded shadow-sm table-hover">
+                <caption>
+                  Lista de Detalle
+                </caption>
+                <thead class="table-light">
+                  <tr>
+                    <th scope="col">N°</th>
+                    <th scope="col">Producto</th>
+                    <th scope="col">P.U.</th>
+                    <th scope="col">Cantidad</th>
+                    <th scope="col">Importe</th>
+                    <th scope="col">F. Compra</th>
+                    <th scope="col">F. Vencimiento</th>
+                  </tr>
+                </thead>
+                <tbody id="table_trabajadores">
+                  <tr *ngFor="let detalle of ingresoActual.detalleIngresos; let i=index">
+                    <th>{{i+1}}</th>
+                    <td>{{detalle.nombre}}</td>
+                    <td>{{detalle.precioUnitario | currency:'S/'}}</td>
+                    <td>{{detalle.cantidad}}</td>
+                    <td>{{detalle.importe | currency:'S/'}}</td>
+                    <td>{{detalle.fechaCompra}}</td>
+                    <td>{{detalle.fechaVencimiento}}</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="row mb-3">
+            <div class="col-md-4">
+              <label>Importe Total: </label>
+              <input class="form-control" type="text"
+                [value]="ingresoActual.importeTotal | currency:'S/'" readonly>
+            </div>
+            <div class="col-md-4">
+              <label>IGV: </label>
+              <input class="form-control" type="text" [value]="ingresoActual.igv | currency:'S/'" readonly>
+            </div>
+            <div class="col-md-4">
+              <label>Precio Total: </label>
+              <input class="form-control" type="text" [value]="ingresoActual.precioTotal | currency:'S/'"readonly>
+            </div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+            Cerrar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Modal View -->
